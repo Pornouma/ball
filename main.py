@@ -10,7 +10,7 @@ class SquashGame(gamelib.SimpleGame):
     GREEN = pygame.Color('green')
     
     def __init__(self):
-        super(SquashGame, self).__init__('Squash', SquashGame.BLACK)
+        super(SquashGame, self).__init__('Dodgers', SquashGame.BLACK)
         self.ball = Ball(radius=10,
                          color=SquashGame.WHITE,
                          pos=(self.window_size[0]/2,
