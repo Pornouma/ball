@@ -11,40 +11,39 @@ class SquashGame(gamelib.SimpleGame):
     
     def __init__(self):
         super(SquashGame, self).__init__('Dodgers', SquashGame.BLACK)
-        self.ball = Ball(radius=10,
-                         color=SquashGame.WHITE,
-                         pos=(self.window_size[0]/2,
-                              self.window_size[1]/2),
-                         speed=(200,50))
-        self.player = Player(pos=100,
+        self.balls = []
+        self.balls.append(Ball(radius=10,color=SquashGame.WHITE,pos=(self.window_size[0]/2+100 ,self.window_size[1]/2+40),speed=(200,50)))
+        self.balls.append(Ball(radius=10,color=SquashGame.WHITE,pos=(self.window_size[0]/2+100 ,self.window_size[1]/2+40),speed=(100,50)))
+        self.balls.append(Ball(radius=10,color=SquashGame.WHITE,pos=(self.window_size[0]/2+100 ,self.window_size[1]/2+40),speed=(50,100)))
+        self.balls.append(Ball(radius=10,color=SquashGame.WHITE,pos=(self.window_size[0]/2+100 ,self.window_size[1]/2+40),speed=(50,200)))
+        self.player = Player(wide = 30,height = 30,
                              color=SquashGame.GREEN)
-        self.score = 0
 
 
     def init(self):
         super(SquashGame, self).init()
-        self.render_score()
 
     def update(self):
-        self.ball.move(1./self.fps, self.surface, self.player)
+        for i in range(4):
+            self.balls[i].move(1./self.fps, self.surface, self.player)
+            if self.player.can_hit(self.balls[i]):
+                self.is_terminated = True
 
-        if self.is_key_pressed(K_UP):
+        if self.is_key_pressed(K_LEFT) and self.player.x>100:
+            self.player.move_left()
+        if self.is_key_pressed(K_RIGHT) and self.player.x <510:
+            self.player.move_right()
+        if self.is_key_pressed(K_UP) and self.player.y>100:
             self.player.move_up()
-        elif self.is_key_pressed(K_DOWN):
+        if self.is_key_pressed(K_DOWN) and self.player.y <330:
             self.player.move_down()
-        
-        if self.player.can_hit(self.ball):
-            self.score += 1
-            self.render_score()
-            self.ball.bounce_player()
-        
-    def render_score(self):
-        self.score_image = self.font.render("Score = %d" % self.score, 0, SquashGame.WHITE)
+
 
     def render(self, surface):
-        self.ball.render(surface)
+        for i in range(4):
+            self.balls[i].render(surface)
         self.player.render(surface)
-        surface.blit(self.score_image, (10,10))
+        pygame.draw.rect(surface,SquashGame.WHITE,pygame.Rect(100,100,441,261),2)
 
 def main():
     game = SquashGame()

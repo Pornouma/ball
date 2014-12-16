@@ -1,5 +1,6 @@
 import pygame
 from pygame.locals import *
+import math
 
 class Ball(object):
 
@@ -13,9 +14,16 @@ class Ball(object):
         self.vx = abs(self.vx) # bounce ball back
         
     def move(self, delta_t, display, player):
-        global score, game_over
         self.x += self.vx*delta_t
         self.y += self.vy*delta_t
+        if(self.vy > 0):
+            self.vy += 1
+        else:
+            self.vy -+ 1
+        if(self.vx > 0):
+            self.vx += 1
+        else:
+            self.vx -+ 1
 
         # make ball bounce if hitting wall
         if self.x < self.radius:
@@ -37,27 +45,30 @@ class Player(object):
 
     THICKNESS = 10
 
-    def __init__(self, pos, color, width=100):
-        self.width = width
-        self.pos = pos
+    def __init__(self, color, wide , height):
+        self.wide = wide
+        self.height = height
+        self.x = 320
+        self.y = 260
         self.color = color
+        self.pos = (self.x,self.y)
 
     def can_hit(self, ball):
-        return self.pos-self.width/2.0 < ball.y < self.pos+self.width/2.0 \
-            and ball.x-ball.radius < self.THICKNESS
+        return math.fabs(self.y-ball.y) < 18 and math.fabs(ball.x-self.x) < 18
 
-    def move_up(self):
-        self.pos -= 5
+    def move_left(self):
+        self.x -= 5
+
+    def move_right(self):
+        self.x += 5
 
     def move_down(self):
-        self.pos += 5
+        self.y += 5
+
+    def move_up(self):
+        self.y -= 5
 
     def render(self, surface):
-        pygame.draw.rect(surface,
-                         self.color,
-                         pygame.Rect(0,
-                                     self.pos - self.width/2.0,
-                                     self.THICKNESS,
-                                     self.width),
-                         2)
+        self.pos = (self.x,self.y)
+        pygame.draw.rect(surface,self.color,pygame.Rect(self.x,self.y,self.wide,self.height),2)
         
